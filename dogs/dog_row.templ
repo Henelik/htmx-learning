@@ -1,0 +1,17 @@
+package main
+
+templ DogRows(dogs []Dog) {
+    for _, dog := range dogs {
+        @DogRow(dog)
+    }
+}
+
+templ DogRow(dog Dog) {
+    <tr class="on-hover">
+        <td>{ dog.Name }</td>
+        <td>{ dog.Breed }</td>
+        <td class="buttons">
+            <button class="show-on-hover" hx-delete="/dog/{{ dog.ID }}" hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="delete">X</button>
+        </td>
+    </tr>
+}
