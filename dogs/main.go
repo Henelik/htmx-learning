@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -28,6 +30,23 @@ func AddDog(c *fiber.Ctx) error {
 	return DogRow(dog).Render(c.Context(), c)
 }
 
+func DeleteDog(c *fiber.Ctx) error {
+	dog := Dog{}
+
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return err
+	}
+
+	dog.ID = uint(id)
+
+	if err := db.Delete(&dog).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func main() {
 	newDB, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
@@ -53,6 +72,7 @@ func main() {
 
 		return DogRows(dogs).Render(c.Context(), c)
 	})
+	app.Delete("/dog/:id", DeleteDog)
 
 	app.Listen(":3000")
 }
